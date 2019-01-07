@@ -1,0 +1,11 @@
+{
+  "name": "clam",
+  "version": "0.1.0",
+  "description": "Simple JS substitution esolang",
+  "main": "clam.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dylan Renwick",
+  "license": "MIT"
+}
