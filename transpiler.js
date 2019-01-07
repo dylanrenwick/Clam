@@ -34,6 +34,7 @@ module.exports = class Transpiler {
 		let newCode = "{\n";
 
 		while(this.codeIndex < code.length && !this.errored) {
+			if (code[this.codeIndex] == "\n") { this.codeIndex++; continue; }
 			let evalCode = this.evalToken(code, this.codeIndex);
 			evalCode = evalCode.split("\n").map(x => "\t" + x).join("\n");
 			newCode += evalCode + ";\n";
