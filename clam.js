@@ -24,10 +24,11 @@ process.stdin.on("readable", () => {
 	let transpiler = new Transpiler();
 	transpiler.argCount = inputs.length;
 	var transpiled = transpiler.transpile(code);
+	transpiled = `function __clam_main(arguments) ${transpiled}\n__clam_main(...inputs);`;
 
 	if (!transpiler.errored) {
 		if (debug) console.log(transpiled);
-		else eval(transpiled)(...inputs);
+		else eval(transpiled);
 	}
 });
 
