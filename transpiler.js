@@ -52,8 +52,8 @@ module.exports = class Transpiler {
 	}
 
 	op(operator, code, i) {
-		if (code[i+1] !== "[") return this.evalToken(code, i+1) + ` ${operator} ` + this.evalToken(code, this.codeIndex);
-		else return this.parseArr(code, i+1, ` ${operator} `);
+		if (code[i+1] !== "[") return "(" + this.evalToken(code, i+1) + ` ${operator} ` + this.evalToken(code, this.codeIndex) + ")";
+		else return "(" + this.parseArr(code, i+1, ` ${operator} `) + ")";
 	}
 
 	func(funcName, code, i) {
