@@ -18,6 +18,7 @@ module.exports = class Transpiler {
 			"r": (code, i) => this.argsRead < this.argCount ? "arguments[" + this.argsRead++ + "]" : "<EOF>",
 			"u": (code, i) => { let str = this.evalToken(code, i+1); return str.charAt(0).toUpperCase() + str.slice(1); },
 			"U": (code, i) => `(${this.evalToken(code, i+1)}).toUpperCase()`,
+			"w": (code, i) => { let cond = this.evalToken(code, i+1), loop = this.evalToken(code, this.codeIndex); return `while(${cond}) ${loop}`; },
 			"?": (code, i) => { let cond = this.evalToken(code, i+1), trueArm = this.evalToken(code, this.codeIndex); return `if (${cond}) ${trueArm}`; },
 			"\"": (code, i) => { let str = code[i]; while(code[this.codeIndex] != "\"") str += code[this.codeIndex++]; return str += code[this.codeIndex++]; },
 			"'": (code, i) => "'" + this.evalToken(code, i+1) + "'",
