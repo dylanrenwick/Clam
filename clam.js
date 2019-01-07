@@ -20,7 +20,9 @@ process.stdin.on("readable", () => {
 	if (chunk !== null) {
 		inputs = chunk.split("\n");
 	}
-	inputs = inputs.map(x => x.trim()).map(x => isNaN(parseInt(x)) ? x : parseInt(x));
+	inputs = inputs.map(x => x.trim())
+		.map(x => isNaN(parseInt(x)) ? x : parseInt(x))
+		.filter(x => x === 0 || x);
 
 	let transpiler = new Transpiler();
 	transpiler.argCount = inputs.length;
