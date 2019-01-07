@@ -20,14 +20,15 @@ process.stdin.on("readable", () => {
 	if (chunk !== null) {
 		inputs = chunk.split("\n");
 	}
+	inputs = inputs.map(x => x.trim()).map(x => isNaN(parseInt(x)) ? x : parseInt(x));
 
 	let transpiler = new Transpiler();
 	transpiler.argCount = inputs.length;
 	var transpiled = transpiler.transpile(code);
-	transpiled = `function __clam_main(arguments) ${transpiled}\n__clam_main(...inputs);`;
+	transpiled = `function __clam_main() ${transpiled}\n__clam_main(...inputs);`;
 
 	if (!transpiler.errored) {
-		if (debug) console.log(transpiled);
+		if (debug) console.log(JSON.stringify(inputs) + "\n\n" + transpiled);
 		else eval(transpiled);
 	}
 });
