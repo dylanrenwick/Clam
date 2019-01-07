@@ -4,7 +4,7 @@ const Transpiler = require("./transpiler.js");
 var code = process.argv[2];
 var debug = process.argv[3] =="-v";
 if (code == "-f") {
-	code = fs.readFileSync(process.argv[3]);
+	code = fs.readFileSync(process.argv[3], "utf8");
 	debug = process.argv[4] == "-v";
 }
 
