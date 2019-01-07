@@ -62,7 +62,8 @@ p - Print (console.log)
 r - Read from STDIN (See Input and Output above)
 u - Consume the next token, return the string value of the token with the first letter uppercased
 U - Consume the next token, append `.toUpperCase()` to its value
-? - Consume the next 2 tokens, if the first's value is true, evaluate the second
+w - Consume the next 2 tokens, whie the first's value is truthy, evauate the second
+? - Consume the next 2 tokens, if the first's value is truthy, evaluate the second
 " - Basic string literal, consume all source code chars until the next ", then return as a string. Does not currently support escaped quotes
 ' - Consume the next token, surround its value in single quotes
 [ - Begin a list, consume all tokens until the closing ], then return the items concatenated with ', ' (See lists and arguments above)
