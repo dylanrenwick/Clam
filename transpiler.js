@@ -30,7 +30,7 @@ module.exports = class Transpiler {
 			"|": (code, i) => this.op("||", code, i),
 		};
 
-		for(let i = 0; i < 10; i++) this.map[""+i] = ()=>""+i;
+		for(let i = 0; i < 10; i++) this.map[i] = ()=>""+i;
 		for(let x of "=+-/%*".split("")) this.map[x] = (code, i)=>this.op(x, code, i);
 	}
 
