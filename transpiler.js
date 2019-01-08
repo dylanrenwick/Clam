@@ -14,10 +14,13 @@ module.exports = class Transpiler {
 			"e": (code, i) => this.op("==", code, i),
 			"f": (code, i) => this.parseFunc(code, i),
 			"i": (code, i) => this.evalToken(code, i+1) + "++",
+			"d": (code, i) => this.evalToken(code, i+1) + "--",
 			"p": (code, i) => this.func("console.log", code, i),
 			"r": (code, i) => this.argsRead < this.argCount ? "arguments[" + this.argsRead++ + "]" : "<EOF>",
 			"u": (code, i) => { let str = this.evalToken(code, i+1); return str.charAt(0).toUpperCase() + str.slice(1); },
 			"U": (code, i) => `(${this.evalToken(code, i+1)}).toUpperCase()`,
+			"l": (code, i) => { let str = this.evalToken(code, i+1); return str.charAt(0).toLowerCase() + str.slice(1); },
+			"L": (code, i) => `(${this.evalToken(code, i+1)}).toLowerCase()`,
 			"w": (code, i) => { let cond = this.evalToken(code, i+1), loop = this.evalToken(code, this.codeIndex); return `while(${cond}) ${loop}`; },
 			"?": (code, i) => { let cond = this.evalToken(code, i+1), trueArm = this.evalToken(code, this.codeIndex); return `if (${cond}) ${trueArm}`; },
 			"\"": (code, i) => { let str = code[i]; while(code[this.codeIndex] != "\"") str += code[this.codeIndex++]; return str += code[this.codeIndex++]; },
@@ -28,7 +31,7 @@ module.exports = class Transpiler {
 		};
 
 		for(let i = 0; i < 10; i++) this.map[""+i] = ()=>""+i;
-		for(let x of "=+-^/%*".split("")) this.map[x] = (code, i)=>this.op(x, code, i);
+		for(let x of "=+-/%*".split("")) this.map[x] = (code, i)=>this.op(x, code, i);
 	}
 
 	transpile(code) {
