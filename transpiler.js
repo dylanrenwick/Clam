@@ -12,7 +12,7 @@ module.exports = class Transpiler {
 		this.map = {
 			"a": (code, i) => dictionary[code[this.codeIndex++].charCodeAt(0)-32],
 			"e": (code, i) => this.op("==", code, i),
-			"f": (code, i) => this.parseFunc(code, i),
+			/*"f": (code, i) => this.parseFunc(code, i),*/
 			"i": (code, i) => this.evalToken(code, i+1) + "++",
 			"d": (code, i) => this.evalToken(code, i+1) + "--",
 			"p": (code, i) => this.func("console.log", code, i),
