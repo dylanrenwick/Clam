@@ -54,21 +54,36 @@ Input is only supported from STDIN, and works as follows:
 When the transpiler first starts, before attempting to transpile code, it will wait for input to be given. This input should be terminated with an EOF indicator (Ctrl+D on most terminals). After receiving an EOF indicator, the transpiler will stop listening for input, split the given input on newline, and pass the array of lines as arguments to the main function created by the transpiler. These can be read sequentially (FIFO, Queue style) using the `r` function. Each line may only be read once, as each call to `r` will increment the read lines pointer.
 
 ## Tokens
+### Token Set #1
 ```
 a - Read the next **character** in source code, convert it to an ASCII charcode, subtract 32, then use that value to index into the string dictionary (see dictionary.json) and return the corresponding string
 e - Equality operator, concatenates given arguments with the '==' operator
-i - Increment operator, currently the only implicitly monadic mathematical operator
+i - Increment operator
+d - Decrement operator
 p - Print (console.log)
 r - Read from STDIN (See Input and Output above)
 u - Consume the next token, return the string value of the token with the first letter uppercased
-U - Consume the next token, append `.toUpperCase()` to its value
+U - Consume the next token, append '.toUpperCase()' to its value
+l - Consume the next token, return the string value of the token with the first letter lowercased
+L - Consume the next token, append '.toLowerCase()' to its value
 w - Consume the next 2 tokens, whie the first's value is truthy, evauate the second
 ? - Consume the next 2 tokens, if the first's value is truthy, evaluate the second
 " - Basic string literal, consume all source code chars until the next ", then return as a string. Does not currently support escaped quotes
 ' - Consume the next token, surround its value in single quotes
 [ - Begin a list, consume all tokens until the closing ], then return the items concatenated with ', ' (See lists and arguments above)
++ - Mathematical Addition, concatenates given arguments with the '+' operator
+- - Mathematical Subtraction, concatenates given arguments with the '-' operator
+* - Mathematical Multiplication, concatenates given arguments with the '*' operator
+/ - Mathematical Division, concatenates given arguments with the '/' operator
+% - Mathematical Modulus, concatenates given arguments with the '%' operator
+^ - Mathematical Exponentiation, concatenates given arguments with the '**' operator
 & - Logical AND operator, concatenates given arguments with the '&&' operator
 | - Logical OR operator, concatenates given arguments with the '||' operator
+@ - Evaluates the next token against token set #2
+```
+### Token Set #2
+```
+p - Pi Constant
 ```
 
 ## Golfing
