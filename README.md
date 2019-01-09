@@ -60,8 +60,10 @@ a - Read the next **character** in source code, convert it to an ASCII charcode,
 e - Equality operator, concatenates given arguments with the '==' operator
 i - Increment operator
 d - Decrement operator
+n - Get length of next token
 p - Print (console.log)
 r - Read from STDIN (See Input and Output above)
+R - Read from STDIN using next token as index. if next token is not numeric, return first input
 u - Consume the next token, return the string value of the token with the first letter uppercased
 U - Consume the next token, append '.toUpperCase()' to its value
 l - Consume the next token, return the string value of the token with the first letter lowercased

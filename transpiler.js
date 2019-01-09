@@ -7,8 +7,10 @@ const maps = [
 		/*"f": (code, i, t) => this.parseFunc(code, i),*/
 		"i": (code, i, t) => t.evalToken(code, i+1) + "++",
 		"d": (code, i, t) => t.evalToken(code, i+1) + "--",
+		"n": (code, i, t) => t.evalToken(code, i+1) + ".length",
 		"p": (code, i, t) => func("console.log", code, i, t),
 		"r": (code, i, t) => t.argsRead < t.argCount ? "arguments[" + t.argsRead++ + "]" : "<EOF>",
+		"R": (code, i, t) => { if (/\d/.test(code[i+1])) { let nxt = t.evalToken(code, i+1); return "arguments[" + nxt + "]"; } else return "arguments[0]"; },
 		"u": (code, i, t) => { let str = t.evalToken(code, i+1); return str.charAt(0).toUpperCase() + str.slice(1); },
 		"U": (code, i, t) => `(${this.evalToken(code, i+1)}).toUpperCase()`,
 		"l": (code, i, t) => { let str = t.evalToken(code, i+1); return str.charAt(0).toLowerCase() + str.slice(1); },
