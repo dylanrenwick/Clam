@@ -8,6 +8,7 @@ const maps = [
 		"B": (code, i, t) => { let a = t.evalToken(code, i+1), b = t.evalToken(code, t.codeIndex); return `range(${a}, ${b})`; },
 		"c": (code, i, t) => t.evalToken(code, i+1) + ".charCodeAt(0)",
 		"d": (code, i, t) => t.evalToken(code, i+1) + "--",
+		"D": (code, i, t) => func("distinct", code, i, t),
 		"e": (code, i, t) => op("==", code, i, t),
 		"i": (code, i, t) => t.evalToken(code, i+1) + "++",
 		"n": (code, i, t) => t.evalToken(code, i+1) + ".length",
@@ -17,6 +18,8 @@ const maps = [
 		"q": (code, i, t) => "q",
 		"r": (code, i, t) => t.argsRead < t.argCount ? "arguments[" + t.argsRead++ + "]" : "<EOF>",
 		"R": (code, i, t) => { if (/\d/.test(code[i+1])) { let nxt = t.evalToken(code, i+1); return "arguments[" + nxt + "]"; } else return "arguments[0]"; },
+		"s": (code, i, t) => t.evalToken(code, i+1) + ".toString()",
+		"S": (code, i, t) => `toArr(${t.evalToken(code, i+1)}).join("")`,
 		"u": (code, i, t) => { let str = t.evalToken(code, i+1); return str.charAt(0).toUpperCase() + str.slice(1); },
 		"U": (code, i, t) => `(${this.evalToken(code, i+1)}).toUpperCase()`,
 		"l": (code, i, t) => { let str = t.evalToken(code, i+1); return str.charAt(0).toLowerCase() + str.slice(1); },
@@ -43,7 +46,8 @@ const maps = [
 	},
 	{
 		"p": (code, i, t) => Math.PI,
-		"s": (code, i, t) => func("powerset", code, i, t)
+		"s": (code, i, t) => func("powerset", code, i, t),
+		"~": (code, i, t) => func("permutations", code, i, t)
 	}
 ];
 
