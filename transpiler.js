@@ -3,6 +3,8 @@ const dictionary = require("./dictionary.json");
 const maps = [
 	{
 		"a": (code, i, t) => dictionary[code[t.codeIndex++].charCodeAt(0)-32],
+		"b": (code, i, t) => t.evalToken(code, i+1) + ".toString(2).split('').map(x=>parseInt(x))",
+		"c": (code, i, t) => t.evalToken(code, i+1) + ".charCodeAt(0)",
 		"e": (code, i, t) => op("==", code, i, t),
 		"i": (code, i, t) => t.evalToken(code, i+1) + "++",
 		"d": (code, i, t) => t.evalToken(code, i+1) + "--",
@@ -20,7 +22,7 @@ const maps = [
 		"?": (code, i, t) => { let cond = t.evalToken(code, i+1), trueArm = t.evalToken(code, t.codeIndex); return `if (${cond}) ${trueArm}`; },
 		"\"": (code, i, t) => { let str = code[i]; while(code[t.codeIndex] != "\"") str += code[t.codeIndex++]; return str += code[t.codeIndex++]; },
 		"'": (code, i, t) => "'" + t.evalToken(code, i+1) + "'",
-		"#": (code, i, t) => { let cond = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${arr}.filter(q => ${cond})`; },
+		"#": (code, i, t) => { let cond = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${toArr(arr)}.filter(q => ${cond})`; },
 		"~": (code, i, t) => func("properDivisors", code, i, t),
 		"[": (code, i, t) => `'${t.parseArr(code, i, ", ")}'`,
 		"_": (code, i, t) => { let arr = t.evalToken(code, i+1); return `${arr}.sort()`; },
@@ -28,8 +30,9 @@ const maps = [
 		"&": (code, i, t) => op("&&", code, i, t),
 		"|": (code, i, t) => op("||", code, i, t),
 		":": (code, i, t) => op("==", code, i, t),
-		";": (code, i, t) => { let arr = t.evalToken(code, i+1); return `(${arr}.length>0?${arr}.reduce((a,b) => a * b):0)`; },
-		"`": (code, i, t) => { let pred = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${arr}.map(q => ${pred})`; },
+		";": (code, i, t) => { let arr = t.evalToken(code, i+1); return `((__reduce_val=${toArr(arr)}).length>0?__reduce_val.reduce((a,b) => a * b):0)`; },
+		"\\": (code, i, t) => { let arr = t.evalToken(code, i+1); return `((__reduce_val=${toArr(arr)}).length>0?__reduce_val.reduce((a,b) => a + b):0)`; },
+		"`": (code, i, t) => { let pred = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${toArr(arr)}.map(q => ${pred})`; },
 		"{": (code, i, t) => { let a = t.evalToken(code, i+1); return `${a}[0]`; },
 		"}": (code, i, t) => { let a = t.evalToken(code, i+1); return `${a}.reverse()[0]`; },
 		"@": (code, i, t) => t.evalToken(code, i+1, maps[1]),
@@ -51,6 +54,10 @@ function op(operator, code, i, t) {
 function func(funcName, code, i, t) {
 	if (code[i+1] !== "[") return funcName + "(" + t.evalToken(code, i+1) + ")";
 	else return funcName + "(" + t.parseArr(code, i+1, ", ") + ")";
+}
+
+function toArr(a) {
+	return `(Array.isArray(__intermed_val=${a})?__intermed_val:typeof(__intermed_val)==='string'?__intermed_val.split(''):typeof(__intermed_val)==='number'?__intermed_val.toString().split('').map(x=>parseInt(x)):__intermed_val.toString().split(''))`;
 }
 
 module.exports = class Transpiler {

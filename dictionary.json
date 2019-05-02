@@ -1,4 +1,4 @@
 [
 	"zero","one","two","three","four","five","six","seven","eight","nine",
-	"myVar", "hello", "world"
+	"myVar", "hello", "world", " !\"#$%&\\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 ]

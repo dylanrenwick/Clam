@@ -59,6 +59,8 @@ Note that the first line is also implicitly assigned to the special global varia
 ### Token Set #1
 ```
 a - Read the next **character** in source code, convert it to an ASCII charcode, subtract 32, then use that value to index into the string dictionary (see dictionary.json) and return the corresponding string
+b - Consume the next token as a number, convert it to its binary representation as an array of integer bits
+c - Consume the next token as a string, return the charcode of the first character
 e - Equality operator, concatenates given arguments with the '==' operator
 i - Increment operator
 d - Decrement operator
@@ -92,6 +94,7 @@ _ - Consume the next token as an array, return the array sorted in ascending ord
 | - Logical OR operator, concatenates given arguments with the '||' operator
 : - Equality operator, concatenates given arguments with the '==' operator
 ; - Consume the next token as an array, return the product of the array
+\ - Consume the next token as an array, return the sum of the array
 ` - Consume the next token 'a' as a predicate, consume the token after it 'b' as an array. For each item 'q' from 'b', replace it with 'a(q)'
 { - Consume the next token, return the item at index 0 in its value
 } - Consume the next token, reverse it and return the item at index 0 in its value
