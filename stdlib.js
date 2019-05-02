@@ -11,6 +11,7 @@ function properDivisors (n) {
     ).slice(0, -1);
 }
 function range (m, n) {
+    if (m > n) return range(n, m);
     return Array.from({
         length: (n - m) + 1
     }, (_, i) => m + i);
