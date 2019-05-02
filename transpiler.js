@@ -25,7 +25,7 @@ const maps = [
 		"#": (code, i, t) => { let cond = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${toArr(arr)}.filter(q => ${cond})`; },
 		"~": (code, i, t) => func("properDivisors", code, i, t),
 		"[": (code, i, t) => `'${t.parseArr(code, i, ", ")}'`,
-		"_": (code, i, t) => { let arr = t.evalToken(code, i+1); return `${arr}.sort()`; },
+		"_": (code, i, t) => { let arr = t.evalToken(code, i+1); return `${arr}.concat().sort()`; },
 		"^": (code, i, t) => op("**", code, i, t),
 		"&": (code, i, t) => op("&&", code, i, t),
 		"|": (code, i, t) => op("||", code, i, t),
