@@ -24,13 +24,15 @@ process.stdin.on("readable", () => {
 		.map(x => isNaN(parseInt(x)) ? x : parseInt(x))
 		.filter(x => x === 0 || x);
 
+	let libCode = fs.readFileSync("./stdlib.js");
+
 	let transpiler = new Transpiler();
 	transpiler.argCount = inputs.length;
 	var transpiled = transpiler.transpile(code);
-	transpiled = `function __clam_main() ${transpiled}\n__clam_main(...inputs);`;
+	transpiled = `${libCode}\n\nfunction __clam_main() ${transpiled}\n\n__clam_main(...inputs);`;
 
 	if (!transpiler.errored) {
-		if (debug) console.log(JSON.stringify(inputs) + "\n\n" + transpiled);
+		if (debug) console.log("Inputs:\n" + JSON.stringify(inputs) + "\nCode:\n\n" + transpiled);
 		else eval(transpiled);
 	}
 });

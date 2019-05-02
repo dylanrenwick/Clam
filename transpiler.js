@@ -4,11 +4,12 @@ const maps = [
 	{
 		"a": (code, i, t) => dictionary[code[t.codeIndex++].charCodeAt(0)-32],
 		"e": (code, i, t) => op("==", code, i, t),
-		/*"f": (code, i, t) => this.parseFunc(code, i),*/
 		"i": (code, i, t) => t.evalToken(code, i+1) + "++",
 		"d": (code, i, t) => t.evalToken(code, i+1) + "--",
 		"n": (code, i, t) => t.evalToken(code, i+1) + ".length",
-		"p": (code, i, t) => func("console.log", code, i, t),
+		"p": (code, i, t) => { t.out = false; return func("console.log", code, i, t) },
+		"Q": (code, i, t) => "Q",
+		"q": (code, i, t) => "q",
 		"r": (code, i, t) => t.argsRead < t.argCount ? "arguments[" + t.argsRead++ + "]" : "<EOF>",
 		"R": (code, i, t) => { if (/\d/.test(code[i+1])) { let nxt = t.evalToken(code, i+1); return "arguments[" + nxt + "]"; } else return "arguments[0]"; },
 		"u": (code, i, t) => { let str = t.evalToken(code, i+1); return str.charAt(0).toUpperCase() + str.slice(1); },
@@ -19,19 +20,28 @@ const maps = [
 		"?": (code, i, t) => { let cond = t.evalToken(code, i+1), trueArm = t.evalToken(code, t.codeIndex); return `if (${cond}) ${trueArm}`; },
 		"\"": (code, i, t) => { let str = code[i]; while(code[t.codeIndex] != "\"") str += code[t.codeIndex++]; return str += code[t.codeIndex++]; },
 		"'": (code, i, t) => "'" + t.evalToken(code, i+1) + "'",
+		"#": (code, i, t) => { let cond = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${arr}.filter(q => ${cond})`; },
+		"~": (code, i, t) => func("properDivisors", code, i, t),
 		"[": (code, i, t) => `'${t.parseArr(code, i, ", ")}'`,
+		"_": (code, i, t) => { let arr = t.evalToken(code, i+1); return `${arr}.sort()`; },
 		"^": (code, i, t) => op("**", code, i, t),
 		"&": (code, i, t) => op("&&", code, i, t),
 		"|": (code, i, t) => op("||", code, i, t),
+		":": (code, i, t) => op("==", code, i, t),
+		";": (code, i, t) => { let arr = t.evalToken(code, i+1); return `(${arr}.length>0?${arr}.reduce((a,b) => a * b):0)`; },
+		"`": (code, i, t) => { let pred = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${arr}.map(q => ${pred})`; },
+		"{": (code, i, t) => { let a = t.evalToken(code, i+1); return `${a}[0]`; },
+		"}": (code, i, t) => { let a = t.evalToken(code, i+1); return `${a}.reverse()[0]`; },
 		"@": (code, i, t) => t.evalToken(code, i+1, maps[1]),
 	},
 	{
-		"p": (code, i, t) => Math.PI
+		"p": (code, i, t) => Math.PI,
+		"s": (code, i, t) => func("powerset", code, i, t)
 	}
 ];
 
 for(let i = 0; i < 10; i++) maps[0][i] = ()=>i;
-for(let x of "=+-/%*".split("")) maps[0][x] = (code, i, t) => op(x, code, i, t);
+for(let x of "=+-/%*<>".split("")) maps[0][x] = (code, i, t) => op(x, code, i, t);
 	
 function op(operator, code, i, t) {
 	if (code[i+1] !== "[") return "(" + t.evalToken(code, i+1) + ` ${operator} ` + t.evalToken(code, t.codeIndex) + ")";
@@ -48,6 +58,7 @@ module.exports = class Transpiler {
 		this.argCount = 0;
 		this.argsRead = 0;
 		this.parent = parent;
+		this.out = true;
 
 		this.codeIndex = 0;
 		this.errored = false;
@@ -56,13 +67,17 @@ module.exports = class Transpiler {
 	}
 
 	transpile(code) {
-		let newCode = "{\n";
+		let newCode = "{\n\tvar Q = arguments[0] || 0;\n";
 
 		while(this.codeIndex < code.length && !this.errored) {
 			if (code[this.codeIndex] == "\n") { this.codeIndex++; continue; }
 			let evalCode = this.evalToken(code, this.codeIndex);
 			evalCode = evalCode.split("\n").map(x => "\t" + x).join("\n");
 			newCode += evalCode + ";\n";
+		}
+
+		if (this.out) {
+			newCode += "\tconsole.log(Q);\n";
 		}
 
 		return this.errored ? false : newCode + "}";

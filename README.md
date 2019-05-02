@@ -48,10 +48,12 @@ Most functions, if not given an explicit list of arguments using the `[` token, 
 *Note: Monadic operators such as `-` are not currently implemented, however if in the future they are added, mathematical operators will continue to be dyadic by default, requiring such a monadic operator to be passed a `[]` list containing only a single argument*
 
 ## Input and Output
-Output in Clam is simple. The `p` function is used to output values to STDOUT, using JS's `console.log` function.
+Output in Clam is simple. The `p` function is used to output values to STDOUT, using JS's `console.log` function. If the `p` token is never used, the value of `Q` is implicitly output when the program terminates.
 
 Input is only supported from STDIN, and works as follows:  
-When the transpiler first starts, before attempting to transpile code, it will wait for input to be given. This input should be terminated with an EOF indicator (Ctrl+D on most terminals). After receiving an EOF indicator, the transpiler will stop listening for input, split the given input on newline, and pass the array of lines as arguments to the main function created by the transpiler. These can be read sequentially (FIFO, Queue style) using the `r` function. Each line may only be read once, as each call to `r` will increment the read lines pointer.
+When the transpiler first starts, before attempting to transpile code, it will wait for input to be given. This input should be terminated with an EOF indicator (Ctrl+D on most terminals). After receiving an EOF indicator, the transpiler will stop listening for input, split the given input on newline, and pass the array of lines as arguments to the main function created by the transpiler. These can be read sequentially (FIFO, Queue style) using the `r` function. Each line may only be read once, as each call to `r` will increment the RLP (read lines pointer).
+
+Note that the first line is also implicitly assigned to the special global variable `Q`. This assignment does *not* increment the RLP
 
 ## Tokens
 ### Token Set #1
@@ -62,6 +64,8 @@ i - Increment operator
 d - Decrement operator
 n - Get length of next token
 p - Print (console.log)
+Q - References the special global variable 'Q'
+q - References the special predicate argument 'q'
 r - Read from STDIN (See Input and Output above)
 R - Read from STDIN using next token as index. if next token is not numeric, return first input
 u - Consume the next token, return the string value of the token with the first letter uppercased
@@ -72,20 +76,31 @@ w - Consume the next 2 tokens, whie the first's value is truthy, evauate the sec
 ? - Consume the next 2 tokens, if the first's value is truthy, evaluate the second
 " - Basic string literal, consume all source code chars until the next ", then return as a string. Does not currently support escaped quotes
 ' - Consume the next token, surround its value in single quotes
+# - Consume the next token 'a' as a condition, consume the token after it 'b' as an array. Remove all items 'q' from 'b' that do not satisfy 'a'
+~ - Consume the next token as a number, return a list of the token's unique divisors
 [ - Begin a list, consume all tokens until the closing ], then return the items concatenated with ', ' (See lists and arguments above)
+_ - Consume the next token as an array, return the array sorted in ascending order
 + - Mathematical Addition, concatenates given arguments with the '+' operator
 - - Mathematical Subtraction, concatenates given arguments with the '-' operator
 * - Mathematical Multiplication, concatenates given arguments with the '*' operator
 / - Mathematical Division, concatenates given arguments with the '/' operator
 % - Mathematical Modulus, concatenates given arguments with the '%' operator
 ^ - Mathematical Exponentiation, concatenates given arguments with the '**' operator
+> - Logical More Than operator, concatenates given arguments with the '>' operator
+< - Logical Less Than operator, concatenates given arguments with the '<' operator
 & - Logical AND operator, concatenates given arguments with the '&&' operator
 | - Logical OR operator, concatenates given arguments with the '||' operator
+: - Equality operator, concatenates given arguments with the '==' operator
+; - Consume the next token as an array, return the product of the array
+` - Consume the next token 'a' as a predicate, consume the token after it 'b' as an array. For each item 'q' from 'b', replace it with 'a(q)'
+{ - Consume the next token, return the item at index 0 in its value
+} - Consume the next token, reverse it and return the item at index 0 in its value
 @ - Evaluates the next token against token set #2
 ```
 ### Token Set #2
 ```
 p - Pi Constant
+s - Powerset, consume the next token 'a' as an array, return an array containing all subsets of 'a' including '[]' and 'a'
 ```
 
 ## Golfing
