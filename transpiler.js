@@ -51,13 +51,14 @@ function op(operator, code, i, t) {
 	else return "(" + t.parseArr(code, i+1, ` ${operator} `) + ")";
 }
 
-function func(funcName, code, i, t) {
+function func(funcName, code, i, t, arg = null) {
+	if (arg !== null) return funcName + "(" + arg + ")";
 	if (code[i+1] !== "[") return funcName + "(" + t.evalToken(code, i+1) + ")";
 	else return funcName + "(" + t.parseArr(code, i+1, ", ") + ")";
 }
 
 function toArr(a) {
-	return `(Array.isArray(__intermed_val=${a})?__intermed_val:typeof(__intermed_val)==='string'?__intermed_val.split(''):typeof(__intermed_val)==='number'?__intermed_val.toString().split('').map(x=>parseInt(x)):__intermed_val.toString().split(''))`;
+	return func("toArr", null, null, null, a);
 }
 
 module.exports = class Transpiler {

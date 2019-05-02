@@ -20,3 +20,12 @@ function powerset (n) {
         sub.map(set => [val,...set])
     ),[[]]);
 }
+function toArr (n) {
+    return (Array.isArray(__intermed_val=n)
+            ?__intermed_val
+            :typeof(__intermed_val)==='string'
+                ?__intermed_val.split('')
+                :typeof(__intermed_val)==='number'
+                    ?__intermed_val.toString().split('').map(x=>parseInt(x))
+                    :__intermed_val.toString().split(''));
+}
