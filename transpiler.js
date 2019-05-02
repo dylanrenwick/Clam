@@ -3,6 +3,7 @@ const dictionary = require("./dictionary.json");
 const maps = [
 	{
 		"a": (code, i, t) => dictionary[code[t.codeIndex++].charCodeAt(0)-32],
+		"A": (code, i, t) => func("toArr", code, i, t),
 		"b": (code, i, t) => t.evalToken(code, i+1) + ".toString(2).split('').map(x=>parseInt(x))",
 		"c": (code, i, t) => t.evalToken(code, i+1) + ".charCodeAt(0)",
 		"e": (code, i, t) => op("==", code, i, t),
@@ -10,6 +11,7 @@ const maps = [
 		"d": (code, i, t) => t.evalToken(code, i+1) + "--",
 		"n": (code, i, t) => t.evalToken(code, i+1) + ".length",
 		"p": (code, i, t) => { t.out = false; return func("console.log", code, i, t) },
+		"P": (code, i, t) => func("isPrime", code, i, t),
 		"Q": (code, i, t) => "Q",
 		"q": (code, i, t) => "q",
 		"r": (code, i, t) => t.argsRead < t.argCount ? "arguments[" + t.argsRead++ + "]" : "<EOF>",
@@ -20,6 +22,7 @@ const maps = [
 		"L": (code, i, t) => `(${this.evalToken(code, i+1)}).toLowerCase()`,
 		"w": (code, i, t) => { let cond = t.evalToken(code, i+1), loop = t.evalToken(code, t.codeIndex); return `while(${cond}) ${loop}`; },
 		"?": (code, i, t) => { let cond = t.evalToken(code, i+1), trueArm = t.evalToken(code, t.codeIndex); return `if (${cond}) ${trueArm}`; },
+		"!": (code, i, t) => func("factorial", code, i, t),
 		"\"": (code, i, t) => { let str = code[i]; while(code[t.codeIndex] != "\"") str += code[t.codeIndex++]; return str += code[t.codeIndex++]; },
 		"'": (code, i, t) => "'" + t.evalToken(code, i+1) + "'",
 		"#": (code, i, t) => { let cond = t.evalToken(code, i+1), arr = t.evalToken(code, t.codeIndex); return `${toArr(arr)}.filter(q => ${cond})`; },
