@@ -24,7 +24,7 @@ process.stdin.on("readable", () => {
 		.map(x => isNaN(parseInt(x)) ? x : parseInt(x))
 		.filter(x => x === 0 || x);
 
-	let libCode = fs.readFileSync("./stdlib.js");
+	let libCode = fs.readFileSync(__dirname + "/stdlib.js");
 
 	let transpiler = new Transpiler();
 	transpiler.argCount = inputs.length;
