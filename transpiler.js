@@ -7,6 +7,7 @@ const maps = [
 		"b": (code, i, t) => t.evalToken(code, i+1) + ".toString(2).split('').map(x=>parseInt(x))",
 		"B": (code, i, t) => { let a = t.evalToken(code, i+1), b = t.evalToken(code, t.codeIndex); return `range(${a}, ${b})`; },
 		"c": (code, i, t) => t.evalToken(code, i+1) + ".charCodeAt(0)",
+		"C": (code, i, t) => { let a = t.evalToken(code, i+1), b = t.evalToken(code, t.codeIndex); return `repeat(${a}, ${b})`; },
 		"d": (code, i, t) => t.evalToken(code, i+1) + "--",
 		"D": (code, i, t) => func("distinct", code, i, t),
 		"e": (code, i, t) => op("==", code, i, t),
@@ -24,8 +25,8 @@ const maps = [
 		"U": (code, i, t) => `(${this.evalToken(code, i+1)}).toUpperCase()`,
 		"l": (code, i, t) => { let str = t.evalToken(code, i+1); return str.charAt(0).toLowerCase() + str.slice(1); },
 		"L": (code, i, t) => `(${this.evalToken(code, i+1)}).toLowerCase()`,
-		"w": (code, i, t) => { let cond = t.evalToken(code, i+1), loop = t.evalToken(code, t.codeIndex); return `while(${cond}) ${loop}`; },
-		"?": (code, i, t) => { let cond = t.evalToken(code, i+1), trueArm = t.evalToken(code, t.codeIndex); return `if (${cond}) ${trueArm}`; },
+		"w": (code, i, t) => { let cond = t.evalToken(code, i+1), loop = code[t.codeIndex]=="[" ? t.evalBlock(code, t.codeIndex) : t.evalToken(code, t.codeIndex); return `while(${cond}) ${loop}`; },
+		"?": (code, i, t) => { let cond = t.evalToken(code, i+1), trueArm = code[t.codeIndex]=="[" ? t.evalBlock(code, t.codeIndex) : t.evalToken(code, t.codeIndex); return `if (${cond}) ${trueArm}`; },
 		"!": (code, i, t) => func("factorial", code, i, t),
 		"\"": (code, i, t) => { let str = code[i]; while(code[t.codeIndex] != "\"") str += code[t.codeIndex++]; return str += code[t.codeIndex++]; },
 		"'": (code, i, t) => "'" + t.evalToken(code, i+1) + "'",
@@ -106,6 +107,15 @@ module.exports = class Transpiler {
 		else return "";
 	}
 
+	evalBlock(code, i) {
+		let str = "{\n";
+		let items = this.getArrValues(code, i);
+		for(let item of items) {
+			str += "\t" + item + "\n";
+		}
+		return str + "}";
+	}
+
 	parseArr(code, i, delimiter) {
 		let items = this.getArrValues(code, i);
 		let str = "";
@@ -118,7 +128,7 @@ module.exports = class Transpiler {
 	getArrValues(code, i) {
 		let items = [];
 		i++;
-		while(code[i] != "]") {
+		while(i < code.length && code[i] != "]") {
 			items.push(this.evalToken(code, i));
 			i = this.codeIndex;
 		}

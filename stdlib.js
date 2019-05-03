@@ -69,3 +69,17 @@ function distinct(arr) {
     }
     return newArr;
 }
+function repeatArr(arr, n) {
+    let newArr = [];
+    for(let i = 0; i < n; i++) newArr = newArr.concat(arr);
+    return newArr;
+}
+function repeat(x, n) {
+    return Array.isArray(x)
+        ? repeatArr(x, n)
+        : typeof(x) === "string"
+            ? x.repeat(n)
+            : typeof(x) === "number"
+                ? parseInt(x.toString().repeat(n))
+                : x.toString().repeat(n);
+}
