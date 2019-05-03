@@ -83,3 +83,10 @@ function repeat(x, n) {
                 ? parseInt(x.toString().repeat(n))
                 : x.toString().repeat(n);
 }
+function diff(a, b) {
+    let newArr = [];
+    for (let i of a) {
+        if (!b.includes(i)) newArr.push(i);
+    }
+    return newArr;
+}
