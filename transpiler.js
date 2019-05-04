@@ -18,7 +18,7 @@ const maps = [
 		"P": (code, i, t) => func("isPrime", code, i, t),
 		"Q": (code, i, t) => "Q",
 		"q": (code, i, t) => "q",
-		"r": (code, i, t) => t.argsRead < t.argCount ? "arguments[" + t.argsRead++ + "]" : "<EOF>",
+		"r": (code, i, t) => "arguments[argIndex++]",
 		"R": (code, i, t) => { if (/\d/.test(code[i+1])) { let nxt = t.evalToken(code, i+1); return "arguments[" + nxt + "]"; } else return "arguments[0]"; },
 		"s": (code, i, t) => t.evalToken(code, i+1) + ".toString()",
 		"S": (code, i, t) => `toArr(${t.evalToken(code, i+1)}).join("")`,
@@ -98,7 +98,7 @@ module.exports = class Transpiler {
 			newCode += "\tconsole.log(Q);\n";
 		}
 
-		return this.errored ? false : newCode + "}";
+		return this.errored ? false : newCode + "}\n\nvar argIndex = 0;\n";
 	}
 
 	evalToken(code, i, map = null) {
